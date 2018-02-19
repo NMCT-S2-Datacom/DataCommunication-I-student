@@ -1,3 +1,4 @@
+from RPi import GPIO
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # HOUD JE STRIKT AAN DE NAAMGEVING EN GEBRUIKTE PINNUMMERS UIT DE OPGAVE
 # DE EXPRESSIE ... DIENT ALS PLAATSHOUDER EN MOET JE VERVANGEN DOOR EIGEN CODE
@@ -9,7 +10,9 @@ class LED:
     # a) De init-methode heeft 1 parameter 'pin' waarmee je het pinnummer meegeeft.
     # Dit nummer wordt bijgehouden in een klassevariabele met dezelfde naam.
     # De overeenkomstige pin moet worden ingesteld als output.
-    ...
+    def __init__(self, pin):
+        self.pin = pin
+        GPIO.setup(self.pin, GPIO.OUT)
 
     # b) De methode 'on' laat de LED branden
     ...
