@@ -5,7 +5,7 @@ import unittest
 from unittest import TestCase
 from unittest.mock import patch
 
-from utils import sleep, MockRPi, clock_pin, patcher
+from test.utils import sleep, MockRPi, clock_pin, patcher
 
 patcher.start()
 
