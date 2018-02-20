@@ -39,7 +39,7 @@ class TestLED(TestCase):
     PIN = 23
 
     def setUp(self):
-        from datacom.week01_opgave import LED
+        from datacom.week01 import LED
         MockRPi.GPIO.reset_mock()
         self.uut = LED(self.PIN)
 
