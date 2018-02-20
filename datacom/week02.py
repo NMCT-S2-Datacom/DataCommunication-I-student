@@ -13,7 +13,6 @@ from .week01 import LED as BaseLED, Button as BaseButton
 class Button:
     # a) de init-methode krijgt een extra parameter 'bouncetime' met defaultwaarde None,
     # die wordt bijgehouden in een protected member.
-    # De protected variabele pwm houdt een extra PWM-object bij met frequentie 1kHz.
     ...
 
     # b) overschrijf de methode wait_for_press zodat gebruik gemaakt wordt van de functionaleit van de library.
