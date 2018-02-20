@@ -30,7 +30,7 @@ class Button:
 
 
 def demo_button():
-    # Initialiseer de twee Buttons
+    # Initialiseer de twee Buttons met een bouncetime van 20ms
     btn1, btn2 = ...
 
     # Wanneer op een van de knoppen gedrukt wordt, wordt er een boodschap afgedrukt op het scherm
