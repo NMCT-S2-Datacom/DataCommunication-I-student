@@ -11,7 +11,9 @@ bent met het practicum.
 
 ## Configuratie (enkel 1e keer)
 
-Maak eerst jouw eigen "fork" in GitHub classroom (zie link op LEHO)!
+*Zie ook <./syllabus/setup.md> voor een meer uitgebreide versie!*
+
+Maak eerst jouw eigen "fork" in GitHub classroom (zie link op LEHO)
 
 Via console (git bash):
 ```console
