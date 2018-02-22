@@ -132,9 +132,13 @@ Als je een goede deployment config hebt van week 1, kan je die recycleren. Check
 ## e) Remote interpreter
 - Ga naar Project: ... > Project Interpreter
 
+### Check ALTIJD dat het veld `Path Mappings` aanwezig en ingevuld is!
+- goed: `<project root> --> /home/me/datacom`
+- slecht: `(Empty)` of gewoon helemaal niet te zien
+
 *NB: De "Deployment Config" waarop je "Remote Interpreter" gebaseerd is **moet** dezelfde 
 zijn als diegene die voor het project is geconfigureerd, anders werkt het niet!
-Hou dus geen hoop nutteloze kopieën van je Deployment Config bij!*
+Hou dus geen hoop nutteloze kopieën van je Deployment Config bij.*
 
 ### Om een nieuwe toe te voegen:
 - *Tandwieltje* --> `Add Remote...`
@@ -143,25 +147,24 @@ Hou dus geen hoop nutteloze kopieën van je Deployment Config bij!*
 
   bv. `/home/me/datacom/env/bin/python` 
  
-  *NB: omdat dit venv met Python3 is aangemaakt, verwijst `python` in die directory ook gewoon naar Python3 - dit in tegenstelling tot `/usr/bin/python`*
+  *NB: omdat dit venv met Python3 is aangemaakt, verwijst `python` in die directory ook gewoon naar Python3
+  - dit in tegenstelling tot `/usr/bin/python`*
 
-### Zeker als je die van week 1 recycleert:
-**Check dubbel dat alles zeker juist is:**
+### Om te verwijderen of aan te passen:
+- Klik *`tandwieltje`* > `More...` (of `Show All...` in sommige versies)
+- Klik `+`, `-` of *`potloodje`*, al naargelang
+
+### Zeker als je die van week 1 recycleert, en anders ook:
+**Check dubbel dat dit zeker juist is:**
 - versie: 3.5.x
 - remote: user@host
 - pad naar python moet verwijzen naar virtual environment in `/home/...` en dus **NIET** `/usr/bin/python`
 
-Bv.: `Remote Python 3.5.3 (sftp://tom@169.254.10.1:22/home/me/datacom/env/bin/python)`
+Bv.: `Remote Python 3.5.3 (sftp://me@169.254.10.1:22/home/me/datacom/env/bin/python)`
 
-### Check dat het veld `Path Mappings` aanwezig en ingevuld is!** 
-- goed: `<project root> --> /home/me/datacom`
-- slecht: `(Empty)` of gewoon helemaal niet te zien
+(als je de naam leeg maakt en dan bevestigt, wordt hij opnieuw volgens dit formaat ingevuld), 
+### Check AGAIN dat het veld `Path Mappings` aanwezig en goed ingevuld is
 
-### Om een te verwijderen of aan te passen:
-- Klik *`tandwieltje`* > `More...` (of Show All in nieuwste versie)
-- Klik `+`, `-` of *`potloodje`*, al naargelang
-
-**Check AGAIN dat het veld `Path Mappings` nu aanwezig en ingevuld is!!!** 
 
 ## f) Automatic upload naar de RPi
 - Ga naar (menu) `Tools > Deployment > Options`
