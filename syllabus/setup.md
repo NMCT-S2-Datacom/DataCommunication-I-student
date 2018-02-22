@@ -100,8 +100,8 @@ of gebruik de `...`-knop om te bladeren) + OK
 
 ## b) clone repo -> PyCharm project
 - ga naar `VCS > Checkout from Version Control > GitHub`
-- als je **nog geen** token hebt, klik dan op `Generate API token` en geef je user/pass van GitHub in + OK
-- kies uit de lijst: *https://github.com/NMCT-S2-DataCom1/datacommunication-1-*<username>*.git*
+- als je nog geen token hebt, klik dan op `Generate API token` en geef je user/pass van GitHub in + OK
+- kies uit de lijst: *https://github.com/NMCT-S2-DataCom1/datacommunication-1-*\<username>*.git*
 - kies een geschikte plaats voor het project op je harde schijf ("Parent directory")
 
 ## c) git remotes
