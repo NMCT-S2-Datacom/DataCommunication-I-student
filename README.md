@@ -8,10 +8,9 @@ die je kan importeren in jouw projecten.
 bent met het practicum. 
 - [test](test): unit tests die je kan gebruiken om jouw oplossingen te testen. **In deze directory niets wijzigen!**
 
-
 ## Configuratie (enkel 1e keer)
 
-*Zie ook <./syllabus/setup.md> voor een meer uitgebreide versie!*
+*Zie ook [setup](syllabus/setup.md) voor een meer uitgebreide versie!*
 
 Maak eerst jouw eigen "fork" in GitHub classroom (zie link op LEHO)
 
