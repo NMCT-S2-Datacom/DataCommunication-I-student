@@ -22,10 +22,10 @@ git remote add upstream https://github.com/NMCT-S2-DataCom1/DataCommunication-I-
 *vervang <user> door jouw GitHub-username*
 
 Of via PyCharm:
-- Ga naar VCS > Checkout from Version Control > GitHub...
-- Kies jouw repository uit de lijst en pas eventueel de lokale directory aan.
-- Ga naar VCS > Git > Remotes... 
-- Voeg een remote toe (+) (let op: de beide letterlijk over te nemen, anders werkt het niet!)
+- `VCS > Checkout from Version Control > GitHub...`
+- Kies jouw repository uit de lijst en pas eventueel de lokale directory (Parent directory) aan.
+- Ga naar `VCS > Git > Remotes...`
+- Voeg een remote toe (+) (let op: de beide **letterlijk** over te nemen, anders werkt het niet!)
   - naam: **upstream**
   - URL: **https://github.com/NMCT-S2-DataCom1/DataCommunication-I-student.git**
 - Bevestig met OK
@@ -39,8 +39,10 @@ Via console (git bash):
 cd DataCommunication-1
 git fetch upstream
 git rebase upstream/master
+git push origin/master
 ```
 
 Of via PyCharm:
-- VCS > Git > Rebase my GitHub fork
+- `VCS > Git > Rebase my GitHub fork`
+- `VCS > Git > Push...`
 
