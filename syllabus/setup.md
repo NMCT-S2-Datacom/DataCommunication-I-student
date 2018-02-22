@@ -1,4 +1,4 @@
-# 1) Overzicht
+# Overzicht
 - Maak een directory voor je project op de RPi
 - Maak **in die directory** een python3 virtual environment
 - Fork je repo m.b.v. GitHub Classroom
@@ -27,8 +27,12 @@ tom@rpi-tom:~/datacom$
 ```
 
 # 2) GitHub
+Maak een eigen fork van <https://github.com/NMCT-S2-DataCom1/DataCommunication-I-student.git> om in te werken:
 - volg de instructies via GitHub Classroom (link: zie LEHO)
 - **kies je e-mailadres uit de lijst!**
+- er wordt een private fork in https://github.com/NMCT-S2-DataCom1 gemaakt die enkel jij kan zien
+
+*NB: enkel commits in dit repository kunnen mee geëvalueerd worden!*
 
 # 3) PyCharm:
 ## a) git 
@@ -41,12 +45,11 @@ of gebruik de `...`-knop om te bladeren) + OK
 ## b) clone repo -> PyCharm project
 - ga naar `VCS > Checkout from Version Control > GitHub`
 - als je **nog geen** token hebt, klik dan op `Generate API token` en geef je user/pass van GitHub in + OK
-- kies uit de lijst: *datacommunication-1-*\<username>*.git*
+- kies uit de lijst: *https://github.com/NMCT-S2-DataCom1/datacommunication-1-*<username>*.git*
 - kies een geschikte plaats voor het project op je harde schijf ("Parent directory")
 
-## c) remotes
-Om elke week nieuw materiaal te kunnen binnentrekken moet je jouw repo 
-linken aan het "master" repo:
+## c) git remotes
+Om elke week nieuw materiaal te kunnen binnentrekken moet je in de lokale git-config jouw repo nog aan het master-repo linken:
 - ga naar `VCS > Git > Remotes... `
 - voeg een remote toe met `+` en **neem letterlijk over**:
 	- Name: **upstream**
@@ -54,60 +57,62 @@ linken aan het "master" repo:
 - test of het werkt: `VCS > Git > Rebase my GitHub fork` (als je net pas je fork gemaakt hebt, zal er niets wijzigen, maar je zou alleszins geen fout mogen krijgen)
 
 ## d) deployment config
-*Als je een goede deployment config hebt van week 1, kan je die recycleren. Check wel de settings, tabblad Mappings* 
+*Als je een goede deployment config hebt van week 1, kan je die recycleren. Check wel de settings, vooral tabblad `Mappings`* 
 - Ga naar `File > Settings` en dan `Build Execution, Deployment > Deployment`
 - Voeg een toe met `+`, geef een naam (bv. RPi-APIPA) en kies type `SFTP`
-- Vink 'Visible only for this project' **af**
+- Vink `Visible only for this project` **af**
 - Type: moet `SFTP` zijn
 - Geef hostname of IP, user+password in en vink 'Save password' aan
-- Klik 'Test SFTP Connection'
-- Klik 'Autodetect' er net onder
+- Klik `Test SFTP Connection`
+- Klik `Autodetect` er net onder
 
 **Belangrijk om te checken ook als je een werkende config recycleert:**
-- Ga naar tabblad *Mappings*
+- Ga naar tabblad `Mappings`
 - Deployment path on server: `/datacom`
 - Zet deze config als default: bladje met groen vinkje --> naam wordt vetgedrukt
-- Klik *Apply* voor je naar de volgende stap gaat
+- Klik `Apply` voor je naar de volgende stap gaat
 
 ## Remote interpreter
-- Ga naar Project: datacommunication-1-... > Project Interpreter
+- Ga naar Project: ... > Project Interpreter
 
 ### Als je die van week 1 recycleert:
 
 **Check dubbel dat alles zeker juist is!**
-- Versie (3.5.x)
+- versie:3.5.x
 - remote: user@host
 - pad naar python moet verwijzen naar virtual environment
 
 Bv.: `Remote Python 3.5.3 (sftp://tom@169.254.10.1:22/home/tom/datacom/env/bin/python)`
 
-**Check dat het veld 'Path Mappings' aanwezig en ingevuld is!!!** 
-- GOED (bv.): `<project root> --> /home/tom/datacom`
-- NIET GOED: `(Empty)`
+**Check dat het veld `Path Mappings` aanwezig en ingevuld is!!!** 
+- goed: `<project root> --> /home/tom/datacom`
+- slecht: `(Empty)` of gewoon helemaal niet te zien
 
 
-NB: De "Deployment Config" waarop je "Remote Interpreter" gebaseerd is **moet** dezelfde 
+*NB: De "Deployment Config" waarop je "Remote Interpreter" gebaseerd is **moet** dezelfde 
 zijn als diegene die voor het project is geconfigureerd, anders werkt het niet!
-Hou dus geen hoop nutteloze kopieën van je Deployment Config bij!
+Hou dus geen hoop nutteloze kopieën van je Deployment Config bij!*
 
 In geval van twijfel: verwijderen en opnieuw beginnen
 
 ### Om een te verwijderen of aan te passen:
-- Klik tandwieltje > More... (of Show All in nieuwste versie)
-- Klik +, - of potloodje al naargelang
+- Klik *`tandwieltje`* > `More...` (of Show All in nieuwste versie)
+- Klik `+`, `-` of *`potloodje`*, al naargelang
 
 ### Om een nieuwe toe te voegen:
-- Tandwieltje --> 'Add Remote...'
+- *Tandwieltje* --> `Add Remote...`
 - Kies **dezelfde deployment config** als diegene die je daarnet hebt ingesteld
-- Pas Remote Interpreter Path aan naar je Virtual Environment!
-*dus bv. /home/tome/datacom/env en **NIET** /usr/bin/python*!!
+- Pas `Remote Interpreter Path` aan naar de python executable je Virtual Environment: `<env-dir>/bin/python`!
+bv. `/home/tom/datacom/env/bin/python3` en dus **NIET** `/usr/bin/python3`!
+ 
+*NB: omdat dit venv met python3 is aangemaakt, verwijst `python` in die directory ook gewoon naar python3 - dit in tegenstelling tot `/usr/bin/python`!*
 
-Bevestig tenslotte alles met OK
+**Check AGAIN dat het veld `Path Mappings` nu aanwezig en ingevuld is!!!** 
 
 ### Automatic upload naar de RPi
-*Als je hier porblemen mee hebt is je deployment config ofwel niet juist, ofwel **niet als default ingesteld***!
 - Ga naar (menu) `Tools > Deployment > Options`
 - Kies ongeveer in het midden 'Always' i.p.v. 'Never' uit het drop-downmenu
 - Nieuwe bestanden moet de je de eerste keer wel nog steeds manueel uploaden, daarom: 
 - Rechterklik op project root directory > 'Upload to RPi-APIPA' (of whatever de naam van je deployment config is)
+*Als je hier porblemen mee hebt is je deployment config ofwel niet juist, ofwel misschien gewoon **niet als default ingesteld***!
 
