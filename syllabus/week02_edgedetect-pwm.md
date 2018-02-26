@@ -1,29 +1,31 @@
 # Week 2: Edge detection, PWM, class inheritance
-## Doelstellingen 
+## Indleidng
+We gaan deze week verder met de componenten en klassen van het vorige labo. De Button wordt voorzien van 
+'edge detection', zodat we een actie aan het indrukken kunnen koppelen. en LED van het vorige labo. 
+### Doelstellingen 
 - Gebruik maken van de RPi.GPIO library om overgangen in het signaal te detecteren (edge detection)
 - Gebruik maken van de ingebouwde software-PWM om een RGB-led aan te sturen 
 - Een collectie pins aansturen m.b.v. loops 
 - Zelf exceptions genereren
 
+### Voorkennis
+- Vorige lessen Datacommunication:
+    - PWM-uitgangen
+    - RGB-LEDs
+    - Drukknoppen, edge detection, callbacks
+- Basic Programming:
+    - Class inheritance (overerving)
+- Prototyping:
+    - Schakelen Button, LED
+    - RGB-LEDs
+    
+### Aandachtspunten
 
-## Herhaling
-We hernemen ter herinnering even de bassistructuur van een script met de RPi.GPIO-library:
-```python
-from RPi import GPIO
+---
 
-GPIO.setmode(GPIO.BCM)
-try:
-	GPIO.setup(20, GPIO.OUT)
-	GPIO.setup(21, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-	value = GPIO.input(21)
-	GPIO.output(20, value)
-except KeyboardInterrupt:
-	pass
-finally:
-	GPIO.cleanup()
-```
-## Edge detection 
-### Polling
+# Edge detection 
+
+## Polling
 > zie ook <https://sourceforge.net/p/raspberry-gpio-python/wiki/Inputs/>
 
 Vorige week hebben we gezien hoe je een knop kan aansluiten en uitlezen. Ter herinnering:
@@ -144,7 +146,7 @@ GPIO.remove_event_detect(channel)
 
 ```
 
-## Pulse Width Modulation (PWM)
+# Pulse Width Modulation (PWM)
 Net zoals de Arduino beschikt de Raspberry Pi niet over echte analoge uitgangen. Voor de meeste doeleinden kunnen 
 we echter analoog gedrag nabootsen door heel snel te wisselen tussen een hoge en lage uitgang, en daarbij het 
 tijdsinterval waarop de uitgang hoog is te variëren (PWM). 
@@ -200,8 +202,59 @@ CPU-belasting te veroorzaken:
 pwm.stop()
 ```
 
-## Python tips & tricks
-### Zelf exceptions genereren 
+# Python
+
+## Herhaling: basisstructuur gebruik GPIO-library
+We hernemen ter herinnering even de bassistructuur van een script met de RPi.GPIO-library:
+```python
+from RPi import GPIO
+
+GPIO.setmode(GPIO.BCM)
+try:
+	GPIO.setup(20, GPIO.OUT)
+	GPIO.setup(21, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+	value = GPIO.input(21)
+	GPIO.output(20, value)
+except KeyboardInterrupt:
+	pass
+finally:
+	GPIO.cleanup()
+```
+
+## Overerving *(class inheritance)*
+Een klasse laten overerven doe je door de basisklasse tussen haakjes achter de klassenaam te zetten: 
+```python
+class Animal:
+    pass
+
+class Mammal(Animal):
+    pass
+
+class Cow(Mammal):
+    pass
+```
+Met `isinstance(obj, type)` kan je testen of een object van een bepaalde klasse OF een van de superklassen ervan is:
+```pycon
+>>> cow = Cow()
+>>> mammal = Mammal()
+>>> animal = Animal()
+>>> isinstance(cow, Mammal)
+True
+>>> isinstance(cow, Animal)
+True
+>>> isinstance(mammal, Animal)
+True
+>>> isinstance(animal, Mammal)
+False
+```
+
+Als je klassen overerft, krijgt de subklasse alle variabelen en methodes van de superklasse mee. Je kan een methode 
+overschrijven (*override*) door ze in de subklasse opnieuw te implementeren.
+
+<!-- TODO: uitbreiden, voorbeelden, super().__init__() -->
+
+
+## Zelf exceptions genereren 
 We hebben reeds gezien hoe je fouten (exceptions) kan opvangen d.m.v. een `try... except...`. Je kan echter ook zelf 
 een exception genereren als er iets fout gaat in je programma, namelijk met het keyword `raise`:
 ```python
@@ -225,7 +278,7 @@ def read_pin(pin):
         
 ```
 
-### List comprehensions
+## List comprehensions
 Een heel handige functie in Python zijn zgn. *comprehensions*. Daarme kan je bewerkingen op verzamelingen (list, dict) 
 uitvoeren en meteen een nieuwe verzameling genereren. Neem bijvoorbeeld volgende code om een reeks buttons te 
 initialiseren:
@@ -243,3 +296,8 @@ buttons = [Button(pin) for pin in pins]
 
 Op een gelijkaardige manier kan je ook een `dict` maken, filteren, ... 
 Meer info bv. op <https://www.digitalocean.com/community/tutorials/understanding-list-comprehensions-in-python-3>
+
+---
+
+# Schakelschema
+![Schakeling week 2](week02_schema.svg)
