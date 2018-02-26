@@ -119,11 +119,50 @@ class Heater(PwmPin):
 
 class Thermostat:
     def __init__(self, sensor: DS18B20, led: RGBLED, button: Button, fan: DCMotor, heat: Heater):
+        self.sensor = sensor
+        self.led = led
+        self.button = button
+        self.fan = fan
+        self.heat = heat
+        self.hysteresis = 1
+        self.set_point = self.sensor.get_temperature()
+        self.button.on_press(self.set_temperature)
+
+    def set_temperature(self):
+        self.set_point = self.sensor.get_temperature()
+        self.update()
+
+    def update(self):
+        self.update_outputs()
+        self.update_leds()
+
+    def update_outputs(self):
+        # Stuur de ventilator en verwarming aan:
+        # - als de temperatuur te hoog is, zet je de verwarming uit en de ventilator aan
+        # - als de temperatuur te laag is, zet je de verwarming aan en de ventilator uit
+        # - anders is de temperatuur goed en zet je allebei uit
+        ...
+
+    def update_leds(self):
+        # CHALLENGE: geef de toestand van de hysterese weer op de RGB-LED:
+        # Ondergrens bereikt = 100% blauw
+        # Perfecte temperatuur = paars (50% rood, 50% blauw)
+        # Bovengrens bereikt = 100% rood
+        # Daartussen is er een geleidelijke overgang van blauw naar rood
         ...
 
 
 def demo_thermostat():
-    ...
+    thermostat = Thermostat(
+        sensor=DS18B20(OneWire.list_slaves()[0]),
+        led=RGBLED(18, 23, 24),
+        button=Button(20),
+        fan=DCMotor(26),
+        heat=Heater(8)
+    )
+    while True:
+        thermostat.update()
+        time.sleep(1)
 
 
 def main():
