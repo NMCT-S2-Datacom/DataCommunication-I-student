@@ -1,8 +1,6 @@
 import json
 from unittest import TextTestRunner, TestLoader, TextTestResult, TestSuite
 
-import sys
-
 import os
 
 PASS = 'PASS'
@@ -17,14 +15,10 @@ COUNTER = {PASS: 0, FAIL: 0, SKIP: 0, ERROR: 0, TOTAL: 0}
 class CustomTestResult(TextTestResult):
     def __init__(self, stream, descriptions, verbosity):
         super().__init__(stream, descriptions, verbosity)
-
-        # TextTestResult has no successes attr
         self.successes = []
         self.results = {TOTAL: COUNTER.copy()}
-        # self.stats = {}
 
     def addSuccess(self, test):
-        # addSuccess do nothing, so we need to overwrite it.
         if '_example' in test._testMethodName:
             self.testsRun -= 1
             return
@@ -98,7 +92,7 @@ if __name__ == '__main__':
               .format(n=TOTAL,
                       r=result[cat][TOTAL][PASS] / result[cat][TOTAL][TOTAL],
                       **result[cat][TOTAL]))
-    print('-' * 70)
+    print('=' * 70)
     print('| {n:<10} | {PASS:^6} | {FAIL:^6} | {SKIP:^6} | {ERROR:^7} | {Total:^7} | {r:^6.1%} |'
           .format(n=TOTAL,
                   r=result[TOTAL][PASS] / result[TOTAL][TOTAL],
