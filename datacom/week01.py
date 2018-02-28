@@ -42,6 +42,7 @@ class Button:
         @property
         def pressed(self):
             return not GPIO.input(self.pin)
+            #28/2
 
     # c) Maak een methode wait_for_press
     # Deze methode test in een oneindige lus of de knop is ingedrukt.
