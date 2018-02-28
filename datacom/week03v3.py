@@ -7,11 +7,13 @@ from datacom.week02 import RGBLED
 def get_temperature(slave_id):
     # open het 'w1_slave' bestand voor de sensor:
     ...
-        # haal er er de juiste regel uit:
+    # haal er er de juiste regel uit:
     ...
 
     # haal de waarde van t uit de regel:
     ...
+    # zet om naar int en deel door 1000 alvorens de waarde te returnen
+    return ...
 
 
 class PwmPin:
