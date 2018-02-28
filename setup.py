@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
     name='NMCT.DataCom',
     version='',
-    packages=['datacom', 'test'],
+    packages=['datacom'],
     url='',
     license='',
     author='Howest NMCT',

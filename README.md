@@ -1,12 +1,15 @@
 # DataCommunication I
 
 ## Inhoud
-- [syllabus](datacom): uitleg & schema's die je nodig hebt voor de practica
 - [datacom](datacom): jouw werkmap. Tegen het eind van het semester is dit een library met componenten 
 die je kan importeren in jouw projecten. 
 - [oefeningen](oefeningen): kleine oefeningen op binair rekenen, etc - voor thuis, of als je klaar 
 bent met het practicum. 
-- [test](test): unit tests die je kan gebruiken om jouw oplossingen te testen. **In deze directory niets wijzigen!**
+
+In de andere twee directories **wijzig je niets aan bestaande bestanden**! Als je eigen nota's (of tests) zou willen
+ toevoegen, doe dat dan in een apart bestand. Als je fouten wil verbeteren, maak een Pull Request!
+- [syllabus](datacom): uitleg & schema's die je nodig hebt voor de practica
+- [test](test): unit tests die je kan gebruiken om jouw oplossingen te testen. 
 
 ## Configuratie (enkel 1e keer)
 
@@ -20,7 +23,7 @@ git clone https://github.com/NMCT-S2-DataCom1/datacommunication-1-<user> DataCom
 cd DataCommunication-1
 git remote add upstream https://github.com/NMCT-S2-DataCom1/DataCommunication-I-student.git
 ```
-*vervang <user> door jouw GitHub-username*
+*vervang <user> door jouw GitHub-username **enkel in de eerste link***
 
 Of via PyCharm:
 - `VCS > Checkout from Version Control > GitHub...`

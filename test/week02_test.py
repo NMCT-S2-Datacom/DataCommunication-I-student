@@ -24,9 +24,9 @@ class TestButton(TestCase):
         from datacom.week01 import Button as BaseButton
         from datacom.week02 import Button
         btn = Button(self.PIN)
-        assert isinstance(btn, BaseButton), "Invalid class inheritance"
+        self.assertIsInstance(btn, BaseButton, "Invalid class inheritance")
         mock_super.assert_called_once_with(self.PIN), "Missing call to superclass init"
-        assert self.uut._bouncetime == self.BOUNCETIME, "Bouncetime member variable not set correctly"
+        self.assertEqual(self.uut._bouncetime, self.BOUNCETIME, "Bouncetime member variable not set correctly")
 
     def test_wait_for_press(self):
         self.uut.wait_for_press(1)
@@ -45,7 +45,7 @@ class TestButton(TestCase):
         # MockRPi.GPIO.input.side_effect = clock_pin
         self.uut.on_press(cb)
         # MockRPi.GPIO.add_event_detect.assert_called_once_with(self.PIN, MockRPi.GPIO.RISING)
-        MockRPi.GPIO.add_event_detect.assert_called_once()
+        self.assertEqual(MockRPi.GPIO.add_event_detect.call_count, 1, "event detection not enabled")
         # cb.assert_called()        # TODO: figure out
 
     def test_on_release(self):
@@ -53,7 +53,7 @@ class TestButton(TestCase):
         MockRPi.GPIO.reset_mock()
         # MockRPi.GPIO.input.side_effect = clock_pin
         self.uut.on_press(cb)
-        MockRPi.GPIO.add_event_detect.assert_called_once()
+        self.assertEqual(MockRPi.GPIO.add_event_detect.call_count, 1, "event detection not enabled")
         # cb.assert_called()
 
 
@@ -66,8 +66,7 @@ class TestDemoButton(TestCase):
     def test_demo_button(self):
         from datacom.week02 import demo_button
         demo_button()
-        assert call(20, 20) in ButtonMock.call_args_list, "btn1 not setup correctly"
-        assert call(21, 20) in ButtonMock.call_args_list, "btn2 not setup correctly"
+        ButtonMock.assert_has_calls([call(20, 20), call(21, 20)], any_order=True)  # "buttons not initialized correctly"
 
 
 class TestLED(TestCase):
@@ -83,14 +82,14 @@ class TestLED(TestCase):
     def test_init(self, mock_super):
         from datacom.week01 import LED as BaseLED
         from datacom.week02 import LED
-        assert self.uut._brightness == self.BRIGHTNESS, "Brightness member variable set incorrectly"
+        self.assertEqual(self.uut._brightness, self.BRIGHTNESS, "Brightness member variable set incorrectly")
         self.assertEqual(self.uut._pwm, MockRPi.GPIO.PWM(), "PWM protected member variable not set correctly")
-        assert MockRPi.GPIO.PWM.call_args_list[0] == call(self.PIN, 1000), "PWM object not setup correctly"
+        self.assertEqual(MockRPi.GPIO.PWM.call_args_list[0], call(self.PIN, 1000), "PWM object not setup correctly")
         self.uut._pwm.start.assert_called_once_with(0), "Missing call to start PWM object"
         MockRPi.reset_mock()
         led = LED(self.PIN)
-        assert isinstance(led, BaseLED), "Invalid class inheritance"
-        assert led._brightness == 100, "Brightness member variable default value incorrect"
+        self.assertIsInstance(led, BaseLED, "Invalid class inheritance")
+        self.assertEqual(led._brightness, 100, "Brightness member variable default value incorrect")
         mock_super.assert_called_once_with(self.PIN), "Missing call to superclass init"
 
     def test_brightness(self):

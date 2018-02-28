@@ -1,9 +1,30 @@
 # Week 1: GPIO met de RPi.GPIO library
-## Doelstellingen
+## Inleiding
+Deze week zetten we onze eerste stappen met de RPi.GPIO-library. We lezen een drukknop uit en sturen een LED aan en 
+maken kennis met de basisstructuur van scripts met de library.
+ 
+### Doelstellingen
 - Python-scripts uitvoeren op de RPi
 - Gebruik maken van de RPi.GPIO library
 - GPIO-pins aansturen en inlezen
 
+### Voorkennis
+- Computer and Networks:
+    - Installatie & configuratie Raspbian op micro-SD
+    - Basiscommando's Linux
+    - Beheer (draadloze) netwerkverbinding van de RPi
+- Prototyping
+    - Gebruik breadboard & elektronische componenten
+    - (Veilig) schakelen van Button en LED
+    - GPIO pins & Digital I/O
+    - Pull-up/down weerstanden
+- Basic Programming 
+    - Lists & for-loops
+    - Klassen & objecten
+    - Public, private & protected members
+    - Encapsulation (properties)
+    
+# De RPi.GPIO-library
 ## Setup
 Om de GPIO-pins te gebruiken moet je eerst de library RPi.GPIO importeren:
 ```python
@@ -56,6 +77,7 @@ en op het eind van je programma kuis je best gewoon alles op in een keer:
 GPIO.cleanup(led)
 ```
 
+# Python
 ## Exception Handling
 Het kan natuurlijk voorkomen dat je programma ergens tegen een fout aanloopt en stopt. In dat geval wordt de 
 cleanup-functie nooit aangeroepen en krijg je bij de volgende keer dat je je script test een warning. We moeten er dus 
@@ -103,3 +125,11 @@ if __name__ == '__main__':
     main()  
 ```
 
+<!-- TODO: herhaling properties -->
+
+---
+
+# Schakelschema
+![Schakeling week 1](week01_schema.svg)
+
+## Werkwijze
