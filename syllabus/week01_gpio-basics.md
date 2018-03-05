@@ -130,6 +130,6 @@ if __name__ == '__main__':
 ---
 
 # Schakelschema
-![Schakeling week 1](week01_schema.svg)
+![Schakeling week 1](circuits/week01_schema.svg)
 
 ## Werkwijze

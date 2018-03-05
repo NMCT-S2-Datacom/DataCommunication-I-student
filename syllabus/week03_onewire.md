@@ -40,7 +40,7 @@ om dezelfde geleider(s) te hergebruiken, maar dat kan natuurlijk niet zonder mee
  - elke gebruiker ziet spanningen afkomstig van anderen op de bus verschijnen, uitgangen moeten dus daarop voorzien zijn
  - verschillende gebruikers zouden tegelijkertijd een verschillende spanning op een geleider kunnen zetten,
  met ongedefiniëerde toestanden of zelfs kortsluiting tot gevolg
- - transmissiemedia hebben een *beperkte bandbreedte*. Vooral digitale signalen kunnen daardoor vrijwel onherkenbaar 
+ - transmissiemedia hebben een *beperkte bandbreedte*. Zeker digitale signalen kunnen daardoor vrijwel onherkenbaar 
  vervormd worden
  - bij het begin, einde, en aansluitpunten van een transmissielijn kunnen *reflecties* ontstaan die het signaal 
  verstoren en de vermogensoverdracht hinderen.
@@ -53,7 +53,7 @@ om dezelfde geleider(s) te hergebruiken, maar dat kan natuurlijk niet zonder mee
  moet een manier gevonden worden om enkele gebruikers uniek aan te spreken
  - een (kwaadwillige of defecte) gebruiker kan de gedeelde geleider voor alle deelnemers onbruikbaar maken
  
-Om met succes meerdere gebruikers dezelfde geleider(s) te laten delen, moeten deze problemen verhopen worden. 
+Om met succes meerdere gebruikers dezelfde geleider(s) te laten delen, moeten deze problemen verholpen worden. 
 Men spreekt in dat geval van een **bus**, waar ook een *protocol* bijhoort dat afspraken over de communicatie
 tussen de verschillende gebruikers vastlegt. 
 
@@ -120,7 +120,7 @@ In plaats van het deelnemers toe te laten zelf een spanning op de bus te leggen,
 hoog signaalniveau d.m.v. een **externe pull-up weerstand**. De uitgangen van ICs die op de bus communiceren worden
 dan voorzien van een extra transistor waarvan de emitter (of source bij een FET) verbonden is met massa. De basis 
 (of gate) is verbonden met de uitgang van de logica en de collector (of drain) met de uitgangspin en dus de bus. 
-Deze configuratie noemt men [open-collector- of open-drain outputs](https://en.wikipedia.org/wiki/Wired_logic_connection).
+Deze configuratie noemt men [open-collector- of open-drain outputs](https://en.wikipedia.org/wiki/Open_collector).
 
 ## Werking
 De bus wordt via een externe weerstand verbonden met de voedingsspanning (in ons geval 3.3V). Aangesloten apparaten 
@@ -323,7 +323,7 @@ Het symbool voor graden (&deg;) behoort niet tot het standaardassortiment van AS
 ---
 
 # Schakelschema
-![Schakeling week 3](week03_schema.svg)
+![Schakeling week 3](circuits/week03_schema.svg)
 
 - Begin met het aansluiten van de temperatuursensor
 - Werk de klasse OneWire en DS18B20 af

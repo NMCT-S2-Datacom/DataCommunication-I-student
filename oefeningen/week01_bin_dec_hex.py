@@ -1,5 +1,6 @@
 import unittest
 
+
 # Zet de gegeven getallen om naar het gevraagde formaat
 # Vervang telkens de ... in de tweede parameter door het gevraagde (zie naam klasse)
 # De prefix 0b duidt een binair getal aan, 0x een hexadecimaal.
@@ -93,4 +94,3 @@ class Bin2Hex(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

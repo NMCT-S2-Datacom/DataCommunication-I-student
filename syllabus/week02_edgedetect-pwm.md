@@ -1,5 +1,5 @@
 # Week 2: Edge detection, PWM, class inheritance
-## Indleidng
+## Inleiding
 We gaan deze week verder met de componenten en klassen van het vorige labo. De Button wordt voorzien van 
 'edge detection', zodat we een actie aan het indrukken kunnen koppelen. en LED van het vorige labo. 
 ### Doelstellingen 
@@ -300,4 +300,4 @@ Meer info bv. op <https://www.digitalocean.com/community/tutorials/understanding
 ---
 
 # Schakelschema
-![Schakeling week 2](week02_schema.svg)
+![Schakeling week 2](circuits/week02_schema.svg)

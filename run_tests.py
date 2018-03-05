@@ -78,6 +78,10 @@ if __name__ == '__main__':
     for fail in result.failures:
         print(' {}.{}.{}'.format(fail[0].__module__, fail[0].__class__.__name__, fail[0]._testMethodName))
 
+    print("\nErrors:")
+    for fail in result.errors:
+        print(' {}.{}.{}'.format(fail[0].__module__, fail[0].__class__.__name__, fail[0]._testMethodName))
+
     print("\nTest summary:")
     for cat in 'test', 'oefeningen':
         print('-' * 70)
