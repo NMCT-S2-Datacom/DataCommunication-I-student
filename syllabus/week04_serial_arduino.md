@@ -178,6 +178,7 @@ Bijvoorbeeld:
 - ESP8266 WiFi module: <https://www.sparkfun.com/products/13678>
 - Huawei MU509-C 3G/HSDPA module: <https://techship.com/products/huawei-mu509-c/>
  
+
 # Gebruik
 ## Windows
 Onder windows krijgen seriële poorten de benaming COM gevolgd door een volgnummer, vandaar dat ze soms ook COM-poort 
@@ -284,17 +285,17 @@ de situatie van de Pi 2 herstellen.
 ### Overzicht configuraties
 *Steeds in `/boot/config.txt`:*
 
-**1) Geen seriële poort nodig, wel Bluetooth:** Ofwel `enable_uart=1` weer in commentaar plaatsen of op 0 zetten, 
+**1) Geen seriële poort nodig, wel Bluetooth:** `enable_uart=1` weer in commentaar plaatsen,  
 dan werkt de Pi weer op de normale klokfrequentie.
 ```console
 # serial port
-enable_uart=0
+#enable_uart=1
 ```
 **2) Wel seriële poort, geen Bluetooth:** Zowel Bluetooth als de mini-UART uitschakelen en de hardware UART toekennen 
 aan de GPIO pins.
 ```console
 # serial port
-enable_uart=0
+#enable_uart=1
 dtoverlay=pi3-disable-bt
 ```
 **3) Allebei, Bluetooth krijgt de hardware UART en de seriële poort de mini-UART:** 
