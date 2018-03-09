@@ -35,7 +35,8 @@ De seriële poort is een *asynchrone seriële interface*. **Asynchroon** wil zeg
 afgesproken momenten wordt verzonden, er is dus geen synchronisatie- of kloksignaal aanwezig. **Serieel** wil zeggen we 
 dat de informatie bit per bit over dezelfde draad wordt verzonden. Dat maakt dat de hardware zeer 
 eenvoudig is: één draad om te versturen, eentje om te ontvangen en een gemeenschappelijke massa (ground) volstaan in 
-principe voor full-duplexoperatie. 
+principe voor full-duplexoperatie. Het is een **point-to-point**-verbinding, er zijn maar twee deelnemers en bijgevolg is 
+er geen nood aan addressering.
 
 De chip die zo’n seriële interface aanstuurt noemt men een **UART**: *Universal Asynchronous Receiver/Transmitter*. 
 Alhoewel er talloze andere seriële interfaces zijn, wordt deze interface meestal gewoon *serial* genoemd. 
@@ -315,7 +316,7 @@ dtoverlay=pi3-miniuart-bt
 
 ## Python
 ### PySerial
-In Python kan je de package *PySerial* installeren om makkelijk een seriële poort te openen:
+In Python kan je de package [PySerial](https://pypi.python.org/pypi/pyserial) installeren om makkelijk een seriële poort te openen:
 ```console
 me@my-rpi:~ $ source datacom/env/bin/activate
 (env) me@my-rpi:~ $ python -m pip install pyserial
