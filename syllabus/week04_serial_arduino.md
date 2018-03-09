@@ -253,6 +253,8 @@ zijn van die groep. Controleer:
 me@my-rpi:~ $ groups
 adm dialout cdrom sudo audio video plugdev games users input netdev gpio i2c spi
 ```
+> NB: Als niet de groep `dialout` maar wel `tty` eigenaar is van het bestand, heb je de vorige stap (seriële console 
+uitschakelen) niet goed gedaan!
 
 ### Symlinks
 Dankzij eerder vermelde veranderingen kan software dus niet zomaar uitgewisseld worden tussen een Pi 2 en 3, we zouden
