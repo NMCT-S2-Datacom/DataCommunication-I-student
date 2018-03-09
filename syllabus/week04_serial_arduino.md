@@ -319,9 +319,9 @@ dtoverlay=pi3-miniuart-bt
 In Python kan je de package [PySerial](https://pypi.python.org/pypi/pyserial) installeren om makkelijk een seriële poort te openen:
 ```console
 me@my-rpi:~ $ source datacom/env/bin/activate
-(env) me@my-rpi:~ $ python -m pip install pyserial
+(env)me@my-rpi:~ $ python -m pip install pyserial
   [...]
-(env) me@my-rpi:~ $ python -m serial.tools.list_ports       # om eens te testen
+(env)me@my-rpi:~ $ python -m serial.tools.list_ports       # om eens te testen
 /dev/ttyAMA0
 /dev/ttyS0
 2 ports found
