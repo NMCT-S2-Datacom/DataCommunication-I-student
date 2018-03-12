@@ -316,20 +316,23 @@ dtoverlay=pi3-miniuart-bt
 
 ## Python
 ### PySerial
-In Python kan je de package [PySerial](https://pypi.python.org/pypi/pyserial) installeren om makkelijk een seriële poort te openen:
+In Python kan je de package [PySerial](https://pypi.python.org/pypi/pyserial) gebruiken om makkelijk een seriële poort 
+te openen. Normaalgezien is die al geïnstalleerd, anders kan je dat doen via PyCharm of op de console. 
+ 
+In PyCharm: `File > Settings > Project: Datacommunication-I > Project Interpreter`. Klik rechts op
+het plusteken om packages te zoeken en installeren.
+
+Op de console: activeer eerst je *venv* en installeer dan `pyserial` met pip:
 ```console
-me@my-rpi:~ $ source datacom/env/bin/activate
-(env)me@my-rpi:~ $ python -m pip install pyserial
+me@my-rpi:~ $ source datacom/venv/bin/activate
+(venv)me@my-rpi:~ $ python -m pip install pyserial
   [...]
-(env)me@my-rpi:~ $ python -m serial.tools.list_ports       # om eens te testen
+(venv)me@my-rpi:~ $ python -m serial.tools.list_ports       # om eens te testen
 /dev/ttyAMA0
 /dev/ttyS0
 2 ports found
 ```
-Hetzelfde kan in PyCharm via `File > Settings > Project: Datacommunication-I > Project Interpreter`. Klik rechts op
-het plusteken om packages te zoeken en installeren.
-
-Om een seriële poort te openen met default settings (9600 8/N/1):
+Je kan de klasse Serial uit deze package gebruiken om een seriële poort te openen, bv. met default settings (9600 8/N/1):
 ```pycon
 >>> import serial
 >>> ser = serial.Serial('/dev/ttyS0')  # open serial port
