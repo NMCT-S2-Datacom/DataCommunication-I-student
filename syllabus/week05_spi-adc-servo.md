@@ -204,7 +204,7 @@ me@my-rpi:~ $ source datacom/env/bin/activate
 In de package zit een klasse `SpiDev` die je moet instantiëren. Vervolgens kan je met de methode `open(bus, device)` een
 slave kiezen. *Bus* is het nummer van de SPI-bus, in ons geval dus 0. *Device* is het nummer van de SS/CE/CS-lijn, 
 standaard heb je op de RPi pins 8 en 9 (BCM) ter beschikking als CE0 en CE1. 
-Terzijde: ook een SPI-device vindt je weer als een bestand in Linux, in dit geval `/dev/spi<port>.<device>`.
+Terzijde: ook een SPI-device vind je weer als een bestand in Linux, in dit geval `/dev/spi<port>.<device>`.
 ```python
 import spidev
 
