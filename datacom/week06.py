@@ -83,7 +83,7 @@ class ShiftRegister:
 
 def shiftreg_demo():
     """
-    Light each display segment one by one in 1 se intervals
+    Light each display segment one by one in 1 sec intervals
     :return: None
     """
     shreg = ShiftRegister()
@@ -91,7 +91,7 @@ def shiftreg_demo():
     while value < 0xff:
         shreg.write_byte(value)
         shreg.copy_to_storage_register()
-        time.sleep(0.5)
+        time.sleep(1)
         value <<= 1
 
 
