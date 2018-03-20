@@ -205,11 +205,15 @@ In de package zit een klasse `SpiDev` die je moet instantiëren. Vervolgens kan 
 slave kiezen. *Bus* is het nummer van de SPI-bus, in ons geval dus 0. *Device* is het nummer van de SS/CE/CS-lijn, 
 standaard heb je op de RPi pins 8 en 9 (BCM) ter beschikking als CE0 en CE1. 
 Terzijde: ook een SPI-device vind je weer als een bestand in Linux, in dit geval `/dev/spi<port>.<device>`.
+
+Standaard werkt `spidev` met de maximale klokfrequentie die de Pi aankan op de SPI-bus, dat zal voor onze MCP3008
+echter te snel zijn. Met de property `max_speed_hz` kan je de klokfrequentie beperken. 
 ```python
 import spidev
 
 spi = spidev.SpiDev()
-spi.open(0, 0)        # Bus SPI0, slave op CE 0 
+spi.max_freq_hz = 10 ** 5           # 100 kHz
+spi.open(0, 0)                      # Bus SPI0, slave op CE 0 
 ```
 Nu heb je volgende methodes van `SpiDev` ter beschikking:
 ```python
@@ -220,6 +224,13 @@ bytes_in = xfer(bytes_out)          # verstuurt de bytes in `bytes_out` en ontva
 bytes_in = xfer2(bytes_out)         # idem, maar tussen de bytes in blijft SS/CE/CS actief
 ```
 
+Na gebruik moet je het device weer sluiten, anders krijg je naar verloop van tijd errors omdat hij telkens opnieuw 
+het "bestand" in `/dev` opent.
+```python
+spi.close()
+```
+
+
 # MCP300x
 De MCP3004 en 3008 ([datasheet](../datasheets/w05_MCP3008.pdf)) zijn resp. 4- en 8-kanaals, 10-bit 
 Analoog/Digitaal-Convertors (ADC) met SPI-interface, ontworpen door Microchip.
@@ -229,27 +240,6 @@ Aan deze ICs kunnen we dus 4 of 8 analoge sensoren aansluiten waarvan de ADC de 
 | ![MCP300x](images/05-6_mcp300x-block-pinout.gif) |
 |:--:|
 | *MXP3004/3008: blokschema en pinout* |
-
-## Werking
-Op het blokschema kan je de werking van deze *successive approximation ADC* zien:
-De control logic van de chip verwacht een instructie van de master en selecteert daarop een analoog kanaal. De 
-spanning op dat kanaal wordt dan vastgehouden in een *sample and hold*-circuit en de waarde van het 
-*successive approximation register (SAR)* wordt geïnitialiseerd met de **MSB op 1 en al de rest 0**. De digitale waarde
-zit zo dus in het midden van het mogelijke bereik.
-
-Vervolgens wordt de waarde in het SAR door een *Digitaal/Analoog-converter (DAC)* weer omgezet naar een analoge spanning, 
-rekening houdend met de referentiespanning V<sub>REF</sub>. 
-Het resultaat wordt door een *comparator* vergeleken met de ingangsspanning en de uitgang daarvan bepaalt de nieuwe waarde 
-van de bit in het register: als de ingangsspanning nog hoger is, moet deze bit zeker al 1 blijven. Is de ingangsspanning 
-echter lager, zitten we met ons voorlopig resultaat te hoog en wordt deze bit een 0.
-
-Vervolgens wordt hetzelfde proces doorlopen met de tweede bit, en zo verder tot de waarde in 
-het SAR overeenkomt met (de digitale voorstelling van) de ingangsspanning. Het resultaat wordt tenslotte door de 
-control logic uitgelezen en serieel op de SPI-bus gezet m.b.v. het *shift register* (waarover volgende week meer).
-
-| ![SAR ADC approximation](images/05-6_sar_adc_approximation.gif) |
-|:--:|
-| *Verloop van het SAR-proces voor verschillende ingangsspanningen* |
  
 ## Pinout
 - **CH0 - CH7:** Analoge ingangen. De MCP300x kan zowel de spanning op een kanaal uitlezen (*single ended*) als het 
@@ -269,6 +259,27 @@ zichzelf uit, de pin kan dus dubbel dienst doen als *SHutDowN*.
 (ruis) veroorzaakt op voedingsspanning en massa. Men voorziet daarom aparte V+ en GND pins voor het analoge en 
 digitale gedeelte zodat beide delen indien nodig helemaal elektrisch gescheiden kunnen blijven. Wij verbinden ze echter
 gewoon samen.
+
+## Werking
+Op het blokschema kan je de werking van deze *successive approximation ADC* zien:
+De control logic van de chip verwacht een instructie van de master en selecteert daarop een analoog kanaal. De 
+spanning op dat kanaal wordt dan vastgehouden in een condensator (*sample and hold*) en de waarde van het 
+*successive approximation register (SAR)* waar het resultaat zal komen wordt geïnitialiseerd met de 
+**MSB op 1 en al de rest 0**. De digitale waarde zit zo in het midden van het mogelijke bereik (512).
+
+Vervolgens wordt de waarde in het SAR door een *Digitaal/Analoog-converter (DAC)* weer omgezet naar een analoge spanning, 
+rekening houdend met de referentiespanning V<sub>REF</sub>, voor 3.3V is dat nu ~1.67V. 
+Het resultaat wordt door een *comparator* vergeleken met de ingangsspanning en de uitgang daarvan bepaalt de nieuwe waarde 
+van de bit in het register: als de ingangsspanning nog hoger is, moet deze bit zeker al 1 blijven. Is de ingangsspanning 
+echter lager, zitten we met ons voorlopig resultaat te hoog en wordt deze bit een 0.
+
+Vervolgens wordt hetzelfde proces doorlopen met de tweede bit, en zo verder tot de waarde in 
+het SAR overeenkomt met (de digitale voorstelling van) de ingangsspanning. Het resultaat wordt tenslotte door de 
+control logic uitgelezen en serieel op de SPI-bus gezet m.b.v. het *shift register* (waarover volgende week meer).
+
+| ![SAR ADC approximation](images/05-6_sar_adc_approximation.gif) |
+|:--:|
+| *Verloop van het SAR-proces voor verschillende ingangsspanningen* |
 
 ## Protocol
 Communicatie met de MCP300x is in principe vrij eenvoudig: we sturen 4 *configure* bits die aangeven welke spanning 
@@ -311,7 +322,13 @@ vervolgens wordt het resultaat teruggestuurd in 10 databits. Dat ziet er dan zo 
 |:--:|
 | *Communicatie met de MCP300x: tijdsdiagram* |
 
-Merk op dat de SS/CE/CS-lijn gedurende de hele operatie **actief blijft**.
+Merk op dat de SS/CE/CS-lijn gedurende de hele operatie **actief blijft**!
+
+Als je in het datasheet kijkt vind je 
+voor de maximale klokfrequentie *f<sub>CLK</sub>* 3.5MHz bij 5V V<sub>DD</sub> of 1.35MHz op 2.7V. De ervaring leert 
+echter dat zelfs 1MHz nog te snel kan zijn (de verbinding op het breadboard is natuurlijk verre van optimaal). Langs
+de andere kant zegt puntje 6.2 in het datasheet dat de *minimale* frequentie 10kHz is. 
+We kiezen daarom voor klokfrequentie van 100kHz, dat is snel genoeg en laat in beide richtingen nog voldoende ademruimte.
 
 ### Communicatie met de Raspberry Pi
 
@@ -387,10 +404,12 @@ de parameters is en wat de functie zou moeten teruggeven.
 3) Testapplicatie 
     - vervolledig de functie `read_trimmer` om ch0 uit te lezen:
         - initialiseer een SpiDev-object
+        - stel de klokfrequentie in op 100kHz
         - open bus 0, device 0 
-        - stel de commandobyte samen (niet zo moeilijk gezien het CH0 is!)
-        - maak een list met de 3 commandobytes, verstuur die en krijg 3 bytes terug
+        - stel de commandobyte samen (niet zo moeilijk: gezien het CH0 is moet je geen rekening houden met het kanaal!)
+        - maak een list met de 3 te versturen bytes, verstuur die en krijg 3 bytes terug
         - haal daar de meetwaarde (0-1024) uit en druk ze af
+        - sluit het device na gebruik (`spi.close()`)
         - verfieer dat de waarde klopt door aan de trimmer te draaien!
 4) Meetwaarde omzetten
     - vervolledig de functie `value_to_volt` om een 10-bit meting om te zetten naar een spanning van 0 tot 3.3V

@@ -430,6 +430,138 @@ def full_duplex_transfer(data):
     return data                         # tadaa! schouderklopje voor onszelf!
 ```
 
+# Decimale getallen
+**We houden dezelfde nummering aan voor decimale cijfers: van rechts naar links en te beginnen bij 0!**
+## Floordiv: Shift left/right
+Herinner je dat een shift *n* plaatsen naar links overeenkwam met een vermenigvuldiging met 2<sup>n</sup> en 
+naar rechts met een deling door 2<sup>n</sup>. Op net dezelfde manier kan je een getal **vermenigvuldigen met 
+10<sup>n</sup> om het een decimale plaats naar links te schuiven, en delen door 10<sup>n</sup> voor een decimale 
+shift naar rechts**. 
+
+Een **machtsverheffing** doe je met de operator `**` (nee, niet `^` zoals je misschien had verwacht - dat 
+is *bitwise XOR*, remember!). 
+```pycon
+>>> 1234 * 10 ** 3 == 1234000           # *10^3 --> shift 3 plaatsen naar links
+True
+>>> 1234000 / 10 ** 3 == 1234           # /10^3 --> shift 3 plaatsen naar rechts
+True
+```
+
+Als we nu nog verder naar rechts zouden shiften krijg je natuurlijk kommagetallen (in Python toch, C & co. zouden bij 
+een *int* blijven), we willen echter dat die cijfers "eraf vallen" zoals de bits dat bij een shift doen. 
+Dat kunnen we makkelijk verhelpen door in de plaats de **gehele deling** `//` (*floordiv*) te gebruiken:
+```pycon
+>>> 1234000 / 10 ** 4 
+123.4
+>>> 1234000 // 10 ** 4 
+123
+>>> 1234000 // 10 ** 5 
+12
+```
+
+Ideaal, dat komt dus volledig overeen met een *shift right*, maar dan decimaal! 
+Ook hier kan je weer een in-place operator gebruiken:
+```pycon
+>>> value = 1234
+>>> value *= 10 ** 3
+>>> value
+1234000
+>>> value //= 10 ** 3
+>>> value
+1234
+>>> value //= 10 ** 2
+>>> value
+12
+>>> value //= 10 ** 0                   # 0-de macht van elk grondtal = 1 ==> geen "shift"
+>>> value
+12
+```
+
+## Modulo: Filter
+Ook cijfers "filteren" kunnen we decimaal, al is de gelijkenis minder treffend. Met de *modulo-operator* 
+`%` bereken je de **rest bij deling**, bijvoorbeeld: 
+```pycon
+>>> 14 // 3                             # gehele deling door 3
+4
+>>> 14 % 3                              # rest bij deling door 3
+2
+>>> 4 * 3 + 2 == 14                     # per definitie: deeltal = (quotiënt * deler) + rest 
+True
+```
+
+Door een getal **modulo 10** te nemen, kan je zo het laatste cijfer (de *eenheden*) eruit **filteren**.
+```pycon
+>>> value = 42                          # getal met twee cijfers
+>>> value % 10                          # eenheden (d0) = rest bij deling door 10 ( = "modulo 10")
+2
+>>> value // 10                         # tientallen (d1): na gehele deling door 10
+4
+```
+
+Zo kan je een getal < 100 in 2 cijfers splitsen. Voor een getal met meer dan 2 cijfers heeft wordt het iets lastiger, 
+de deling door 10 geeft dan namelijk meer dan enkel de tientallen:
+```pycon
+>>> value = 1234
+>>> value % 10                          # d0
+4
+>>> value // 10                         # d3 - d1
+123
+```
+
+## Splitsen en weer samenstellen
+Herinner je echter hoe we bit *n* uit een byte konden filteren met `byte >> n & 1`: **eerst *n* plaatsen naar rechts 
+shiften en vervolgens de LSB eruit filteren met AND**. Op dezelfde manier kunnen we ook het *n*-de decimale cijfer uit 
+een getal halen met `getal // 10 ** n`: **eerst rechts shiften (vermenigvuldigen met 
+*10<sup>n</sup>*), dan de eenheden eruit filteren met `% 10`**. Bijvoorbeeld voor d2:
+
+```pycon
+>>> value = 45678
+>>> value // 10 * 2                     # d1 - d0 zijn "weggeshift"
+456
+>>> value // 10 * 2 % 10                # d2 is de nieuwe d0 --> die er nu uitfilteren
+6
+```
+
+Zo kan je ook makkelijk de cijfers (van klein naar groot) overlopen in loop:
+```pycon
+>>> value = 45678
+>>> while value:                        # impliciet: `while value != 0` of in dit geval `value > 0`
+...     print(value % 10)               # print laatste cijfer
+...     value //= 10                    # shift alles 1 naar rechts
+...
+8
+7
+6
+5
+4
+```
+
+Om bits/bytes aan elkaar te rijgen konden we de inverse bewerking gebruiken: eerst weer op z'n plaats shiften 
+naar **links** en vervolgens erbij te plakken met een **OR**: `result |= byte << n`.
+Om een getal weer samen te stellen uit decimale cijfers kan je de dan eveneens de inverse bewerking gebruiken:
+het *n*-de cijfer **vermenigvuldig je met *10<sup>n</sup>*** (equivalent aan een shift met *n* posities naar links), en 
+telt de resultaten bij elkaar op (*niet helemaal* equivalent aan een *OR*, maar hier goed genoeg):
+```pycon
+>>> digits = [8, 7, 6, 5, 4]
+>>> result = 0
+>>> for n in range(len(digits)):
+...     result += digits[n] * 10 ** n
+...
+>>> value
+45678
+```
+
+Of voor de echte liefhebbers met een *list comprehension*:
+```pycon
+>>> value = 2345678
+>>> digits = [value // 10 ** n % 10 for n in range(len(str(value)))]
+>>> digits
+[8, 7, 6, 5, 4, 3, 2]
+>>> result = sum([d * 10 ** n for n, d in enumerate(digits)])
+>>> result
+2345678
+```
+
 # Binary Coded Decimals (BCD)
 TBA
 
