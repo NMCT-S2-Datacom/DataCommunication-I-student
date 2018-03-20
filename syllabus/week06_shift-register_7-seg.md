@@ -133,7 +133,7 @@ register*! Om dat ook te wissen moet je de (lege) inhoud ook weer kopiëren met 
 ## Cascadeschakeling
 De laatste bit, die in principe zou wegvallen, wordt na een puls op SHCP ter beschikking gesteld op de uitgang Q7S. Die kan je verbinden met
 de ingang (DS) van een volgend shiftregister, en op die manier een *cascade* (waterval) schakeling maken om zo één groot 
-register te maken. MR, OE, SHCP en STCP kan je gewoon doorverbinden, je bespaart op die manier dus mogelijks een hele hoop 
+register te maken. MR, OE, SHCP en STCP kan je gewoon doorverbinden en bespaart op die manier dus mogelijks een hele hoop 
 pins. 
 
 Het geheel werkt dan echt als één groot register, i.p.v. om de 8 bits moet je dus maar **om de 16 (of 24, 32, ...) bits
@@ -192,7 +192,7 @@ E = 1 << 4
 ...
 DP = 1 << 5                     # en voor het puntje maken we natuurlijk ook een mask
 ```
-Met deze masks is het veel makkelijker om een cijfer te vormenm, er valt voor keer 
+Met deze masks is het veel makkelijker om een cijfer te vormen, voor een keer valt er
 namelijk niets te berekenen maar moet je manueel een *look-up table* (LUT) samenstellen.
 ```python
 SEGMENTS = {                 
@@ -201,7 +201,7 @@ SEGMENTS = {
     ...
 }
 ```
-Vervolgens kan je met de LUT makkelijk getallen omzetten:
+Vervolgens kan je met de LUT makkelijk getallen opzoeken:
 ```python
 shiftreg.write_byte(SEGMENTS[7])  # stuurt de (hopelijk) juiste bits voor het cijfer 7
 ``` 
@@ -245,7 +245,7 @@ deze manier maakt de code wel leesbaarder en overzichtelijker om bv. een bepaald
     - vervolledig de resterende methodes van de klasse `ShiftRegister`
 6. CHALLENGE: Cascadeschakeling
     - werk samen met een klasgenoot zodat je 2 shiftregisters en displays kan gebruiken, of vraag een extra aan de docent.
-    - schakel de registers in cascade (zie schema). *Tip: werk best big-endian (eerste shiftregister voor de tientallen, 
+    - schakel de registers in cascade (zie [schema](#cascade-met-2-displays)). *Tip: werk best big-endian (eerste shiftregister voor de tientallen, 
     tweede voor de eenheden), dat maakt de code makkelijker.*
     - vervolledig de klasse `SevenSegmentCascade`:
         - begin om te testen met de methode `show_list` die gewoon achtereenvolgende bytes uit een `list` doorstuurt 
