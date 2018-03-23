@@ -236,13 +236,16 @@ deze manier maakt de code wel leesbaarder en overzichtelijker om bv. een bepaald
     - pas de variabelen `A` - `F` en `DP` aan zodat ze overeenkomen met de juiste uitgang van het shiftregister.
     - nu kan je de cijfers in `SEGMENTS` vervolledigen door de juiste segmenten te combineren met een *OR*
     - test uit of alle cijfers kloppen
-    - vervolledig de methode `show_number` van de klasse `SevenSegment`:
-        - haalde juiste bitwaarde op uit `SEGMENTS` 
-        - als `with_dp` `True` is moet je in de waarde ook de juiste bit voor het puntje nog aanzetten
-        - in `self.shreg` zit een `ShiftRegister`-object (zie gegeven `__init__`), gebruik dat om de waarde naar 
-        het register door te klokken en op te slaan
-5. Afwerking    
-    - vervolledig de resterende methodes van de klasse `ShiftRegister`
+5. Klasse `SevenSegment` (*Updated 2018-03-23 n.a.v. passopdracht - [week06v2.py](../datacom/week06v2.py)*)
+    - methode `show_segments` 
+        - `value` is een byte die overeenkomt met de segementen die moeten oplichten
+        - in `self.shreg` zit al een `ShiftRegister`-object (zie gegeven `__init__`) om te gebruiken
+        - klok de byte door en sla hem op 
+        - zet de uitgangen aan, implementeer daarvoor de property `output_enabled` van `ShiftRegister`
+    - methode `show_number`:
+        - `value` is een getal tussen 0 en 0xF, haal de overeenkomstige byte op uit `SEGMENTS` 
+        - als `with_dp` `True` is moet je daaarin ook nog de bit voor het puntje (DP) aanzetten
+        - nu kan je `show_segments` gebruiken om het cijfer op de display te tonen
 6. CHALLENGE: Cascadeschakeling
     - werk samen met een klasgenoot zodat je 2 shiftregisters en displays kan gebruiken, of vraag een extra aan de docent.
     - schakel de registers in cascade (zie [schema](#cascade-met-2-displays)). *Tip: werk best big-endian (eerste shiftregister voor de tientallen, 
@@ -252,7 +255,9 @@ deze manier maakt de code wel leesbaarder en overzichtelijker om bv. een bepaald
         - vervolledig dan `show_hex_digits`
         - voor `show_decimal_digits` moet je `value` in decimale cijfers kunnen splitsen: zie bijgewerkt 
         [document bitoperaties](bitoperaties.md#decimale-getallen).
-            
+7. Afwerking    
+    - vervolledig de resterende methodes van de klasse `ShiftRegister`
+
 # Schakelschema
 ![Schakeling week 6](circuits/week06_schema.svg)
 
