@@ -236,7 +236,7 @@ deze manier maakt de code wel leesbaarder en overzichtelijker om bv. een bepaald
     - pas de variabelen `A` - `F` en `DP` aan zodat ze overeenkomen met de juiste uitgang van het shiftregister.
     - nu kan je de cijfers in `SEGMENTS` vervolledigen door de juiste segmenten te combineren met een *OR*
     - test uit of alle cijfers kloppen
-5. Klasse `SevenSegment` (*Updated 2018-03-23 n.a.v. passopdracht - [week06v2.py](../datacom/week06v2.py)*)
+5. Klasse `SevenSegment` (*Updated 2018-03-23 n.a.v. paasopdracht - [week06v2.py](../datacom/week06v2.py)*)
     - methode `show_segments` 
         - `value` is een byte die overeenkomt met de segementen die moeten oplichten
         - in `self.shreg` zit al een `ShiftRegister`-object (zie gegeven `__init__`) om te gebruiken
