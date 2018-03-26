@@ -560,6 +560,8 @@ Of voor de echte liefhebbers met een *list comprehension*:
 >>> result = sum([d * 10 ** n for n, d in enumerate(digits)])
 >>> result
 2345678
+>>> result == value
+True
 ```
 
 # Binary Coded Decimals (BCD)
