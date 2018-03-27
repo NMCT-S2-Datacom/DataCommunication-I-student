@@ -196,9 +196,8 @@ d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
 e0: 00 00 00 00 00 00 00 00 00 00 00 40 00 00 00 00    ...........@....
 f0: 00 00 00 00 00 68 00 00 00 00 00 00 00 00 00 00    .....h..........
 
-me@my-rpi:~ $ i2cget -y 1 0x68 0x75                     # register 0x75 = WHO_AM_I bevat i2c adres
+me@my-rpi:~ $ i2cget -y 1 0x68 0x75    # register 0x75 v/d MPU5060 (WHO_AM_I) bevat het i2c adres
 0x68
-
 ```
 
 ## Python
@@ -295,16 +294,8 @@ temperatuursensor in. De metingen worden gedigitaliseerd met een 16-bit ADC waar
 Je kan de chip ook laten detecteren wanneer hij in vrije val is en daarop een *interrupt*-signaal laten genereren op
 de voorziene pin. Dat kan je dan op de RPi inlezen en verwerken op dezelfde manier als het indrukken van een knop.
 
-## Initialisatie
-Bij het opstarten staat de sensor standaard in "sleep" mode en voert geen metingen uit. Om hem wakker te maken moet je
-de `SLEEP`-bit in het register `PWR_MGMT1` uitzetten.
-
-| ![PWR_MGMT_1](images/07-3_mpu6050-reg-pwr_mgmt1.gif) |
-|:--:|
-| *PWR_MGMT_1 register* |
-
-## Meetwaarden
-De MPU6050 beschikt over een 16-bit ADC, elke meting neemt dus 2 registers in beslag en wordt in "big endian"
+## Meetresultaten inlezen
+De MPU6050 digitaliseert de metingen met een 16-bit ADC, elke waarde neemt dus 2 registers in beslag en wordt in "big endian"
 formaat opgeslagen: het eerste register bevat telkens de LSB, het tweede de MSB. Je zal de 2 gelezen bytes dus in de
 juiste volgorde moeten combineren tot een 16-bit meetresultaat. 
 
@@ -333,53 +324,90 @@ Nu heb je een getal tussen -32768 en 32767, wat uiteraard niet de juiste meetwaa
 schaalfactor die je in rekening moet brengen, afhankelijk van het ingestelde bereik. Standaard staat de `(A)FS_SEL` 
 flag (*full-scale range*) op 0 en is dus het kleinste bereik ingesteld.
 
+Voor een consistent resultaat is het belangrijk dat alle meetwaarden (3 assen accelero + 3 assen gyro) van dezelfde 
+meting zijn. De makkelijkste manier om dat te verzekeren is door ze allemaal ineens uit te lezen. Gezien de temperatuur
+tussen de twee gesandwiched zit moeten we die ook meteen meenemen. Dat wil zeggen dat we in totaal 7 (3 + 3 + 1) 
+meetresultaten van 16 bit moeten lezen, oftewel 14 registers van 8 bit te beginnen vanaf 0x3B (MPU6050_REG_ACCEL_OUT).
+```python
+data = i2c.read_i2c_block_data(self.address, MPU6050_REG_ACCEL_OUT, 14)  
+```
+
+## Registers
+De MPU6050 heeft zo veel registers dat de layout niet in het [datasheet](../datasheets/w07_MPU6050.pdf) staat maar een
+apart [document](../datasheets/w07_MPU6050-registers.pdf) krijgt! Gelukkig hebben we er niet veel nodig om de 
+basisfuncties te implementeren.
+
+### Power management
+Bij het opstarten staat de sensor standaard in "sleep" mode en voert geen metingen uit. Om hem wakker te maken moet je
+de `SLEEP`-bit in het register `PWR_MGMT1` uitzetten. Je kan meteen ook het veld `CLKSEL` op 001 zetten, die klok is 
+iets nauwkeuriger. 
+
+| ![PWR_MGMT_1](images/07-3_mpu6050-reg-pwr_mgmt1.gif) |
+|:--:|
+| *PWR_MGMT_1 register* |
+
+> De andere bits in dit register moeten sowieso ook 0 zijn/blijven, je moet je dus niets aantrekken van de huidige inhoud.
+ 
 ### Accelerometer
-De accelerometer is te configureren via register 0x1C en de metingen komen in 0x3B - 0x40.
+De accelerometer is te configureren via register 0x1C: 
 
 | ![Accel config reg](images/07-3_mpu6050-reg-accel_config.gif) |
 |:--:|
 | *ACCEL_CONFIG register* |
 
+Bit 7-5 in `ACCEL_CONFIG` zijn voor een self-test en moeten dus 0 blijven, met bit 4-5 kan je het meetbereik instellen: 
+
 | ![Accel scale factor](images/07-3_mpu6050-afs_range.gif) |
 |:--:|
 | *Accelerometer: meetbereik en schaalfactor* |
 
+De metingen komen in 0x3B - 0x40:
+ 
+| ![Accelout](images/07-3_mpu6050-reg-accel_out.gif) |
+|:--:|
+| *Accelerometer: meetresultaten* |
+
 ### Gyroscoop
-De gyroscoop is te configureren via register 0x1B en de metingen komen in 0x43 - 0x48.
+De gyroscoop is te configureren via register 0x1B:
 
 | ![Gyro config reg](images/07-3_mpu6050-reg-gyro_config.gif) |
 |:--:|
 | *GYRO_CONFIG register* |
 
+Bit 7-5 in `GYRO_CONFIG` zijn voor een self-test en moeten dus 0 blijven, met bit 4-5 kan je het meetbereik instellen: 
+
 | ![Gyro scale factor](images/07-3_mpu6050-fs_range.gif) |
 |:--:|
 | *Gyroscoop: meetbereik en schaalfactor* |
 
+De metingen komen in registers 0x43 - 0x48:
+
+| ![Accelout](images/07-3_mpu6050-reg-gyro_out.gif) |
+|:--:|
+| *Gyroscoop: meetresultaten* |
+
 ### Temperatuur
-De temperatuur zit in registers 0x41 - 0x42. Er valt niets aan in te stellen, maar het omrekenen is net iets specialer. 
+De temperatuur zit tussen accelerometer en gyroscoop in registers 0x41 - 0x42. 
 
 | ![Temp register](images/07-3_mpu6050-reg-temp_out.gif) |
 |:--:|
 | *Temperatuurregisters* |
 
-Uit het datasheet:
+Er valt niets aan in te stellen, maar het omrekenen is net iets specialer. Uit het datasheet:
 > Temperature in degrees C = (TEMP_OUT Register Value as a signed quantity) / 340 + 36.53
 
-### Uitlezen
-Voor een consistent resultaat is het belangrijk dat alle meetwaarden (3 assen accelero + 3 assen gyro) van dezelfde 
-meting zijn. De makkelijkste manier om dat te verzekeren is door ze allemaal ineens uit te lezen. Gezien de temperatuur
-tussen de twee gesandwiched zit moeten we die ook meteen meenemen. Dat wil zeggen dat we in totaal 7 (3 + 3 + 1) 
-meetresultaten van 16 bit moeten lezen, oftewel 14 registers van 8 bit te beginnen vanaf 0x3B (MPU6050_REG_ACCEL_OUT).
+Er is dus niet alleen een schaalfactor van 340, maar ook nog een offset van 36.53 die je er achteraf moet bijtellen! 
+De temperatuur ligt wellicht het meest voor de hand om te zien of je omzetting van big-endian en 2-complement juist is.
 
-```python
-data = i2c.read_i2c_block_data(self.address, MPU6050_REG_ACCEL_OUT, 14)  
-```
-Dus:
-- lees in 1 trek de 14 registers uit
-- combineer telkens 2 registers tot een 16-bit waarde
-- check de sign-bit van die meetwaarde en maak het getal negatief als die 1 is
-- pas de juiste schaalfactor toe
-- (enkel voor temperatuur) tel er de offset bij
+## Werkwijze
+1. Initialiseren:
+    - haal het ding uit sleep mode (je mag daarvoor gewoon het hele register overschrijven)
+2. Uitlezen:
+    - haal in één trek de 14 registers op (gebruik `read_i2c_block_data`)
+    - combineer telkens 2 registers tot een 16-bit waarde
+    - check de sign-bit van die meetwaarde en maak het getal negatief als die 1 is
+    - pas de juiste schaalfactor toe
+    - (enkel voor temperatuur) tel er de offset bij
 
 ---
 
@@ -404,6 +432,7 @@ Dus:
 5. Maak properties om het meetbereik van gyroscoop en accellerometer in te stellen
     - zorg uiteraard dat het resultaat van `get_measurements()` blijft kloppen in elk bereik
 6. CHALLENGE: probeer uit de meetwaarden van beide sensoren de oriëntatie van de sensor te berekenen
+    - zie bv. <https://view.officeapps.live.com/op/view.aspx?src=http://www.cs.unca.edu/~bruce/Fall13/360/IMU_Wk8.pptx>
 
 # Schakelschema
 ![Schakeling week 7](circuits/week07_schema.svg)

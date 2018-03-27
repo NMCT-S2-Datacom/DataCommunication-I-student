@@ -135,7 +135,8 @@ opgeroepen -> dat is dender dus kan je negeren
 - in dat geval bepaalt *de pin waarop het event kwam* de richting 
 
 > Als het niet lukt: **DON'T STRESS** en kom gewoon maandag na de vakantie naar het monitoraat. 't is een rot ding :-)
-Het is ook niet erg als het niet perfect werkt. 
+Het is ook niet erg als het niet perfect werkt. Je kan ondertussen ook gewoon 3 knoppen (left/right/select) aansluiten 
+als bediening.
 
 # Python 
 ## Datum en tijd
@@ -268,6 +269,7 @@ me@my-rpi:~ $ systemctl status myclock.service
 
 4. Maak met deze componenten een klok:
     - door aan de rotary encoder te draaien kan je het display wisselen tussen uur/min, sec, dag/maand en jaar
+    >**Als je te veel last hebt met de rotary encoder, sluit dan gewoon 3 drukknoppen aan voor left/right/select**
     - gezien ons display geen `:` in het midden heeft, gebruik je in de plaats maar het middenste DP-segmentje
     - als je de rotary encoder indrukt, kan je een getal van 0-1000 instellen door aan de knop te draaien. De volgende druk 
     op de knop stelt dan een alarm in binnen dat aantal seconden
