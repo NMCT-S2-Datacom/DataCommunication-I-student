@@ -1,6 +1,4 @@
 from RPi import GPIO
-from smbus import SMBus
-
 
 DS1307_DEFAULT_ADDRESS = 0x68
 DS1307_REG_SECONDS = 0x0
@@ -22,6 +20,10 @@ def int2bcd(value):
 
 
 def bcd2int(value):
+    ...
+
+
+def set_seconds_register(value):
     ...
 
 
@@ -58,7 +60,7 @@ def main():
     except KeyboardInterrupt:
         pass
     finally:
-        GPIO.setwarnings(False)     # get rid of warning when no GPIO pins set up
+        GPIO.setwarnings(False)  # get rid of warning when no GPIO pins set up
         GPIO.cleanup()
 
 
