@@ -172,39 +172,9 @@ me@my-rpi:~ $ i2cdetect -y 1
 20: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 30: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 40: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-50: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+50: 50 -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 60: -- -- -- -- -- -- -- -- 68 -- -- -- -- -- -- --
 70: -- -- -- -- -- -- -- --
-
-me@my-rpi:~ $ i2cdump -y 1 0x68
-No size specified (using byte-data access)
-     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f    0123456789abcdef
-00: 80 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ?...............
-10: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
-20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
-30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
-40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
-50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
-60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
-70: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
-80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
-90: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
-a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
-b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
-c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
-d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
-e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
-f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
-
-me@my-rpi:~ $ i2cget -y 1 0x68 0x00                    # secondenregister
-0x80
-me@my-rpi:~ $ i2cset -y 1 0x68 0x00 0x00               # clock halt uit
-me@my-rpi:~ $ i2cget -y 1 0x68 0x00                   
-0x00
-me@my-rpi:~ $ i2cget -y 1 0x68 0x00                   
-0x01
-me@my-rpi:~ $ i2cget -y 1 0x68 0x00                    # de klok tikt!
-0x02
 ```
 
 ## Python
@@ -234,7 +204,7 @@ Zonder internetverbinding echter geen NTP en bijgevolg ook geen juiste tijd. Als
 I<sup>2</sup>C echter een externe *Real-Time Clock (RTC)*-module zoals ZS-042 module in jullie kit toevoegen. 
 Ook in een PC is de RTC trouwens meestal op die manier via I<sup>2</sup>C/SMBus verbonden. 
 
-De DS1307 is ook RTC van dezelfde fabrikant, maar dan zonder alarmfunctie. In de plaats zijn er nog 56 registers die je
+De DS1307 ([datasheet](../datasheets/w07v2_DS1307.pdf))is ook RTC van dezelfde fabrikant, maar dan zonder alarmfunctie. In de plaats zijn er nog 56 registers die je
 als geheugen kan gebruiken. De chip wordt dikwijls uitgebreid met een batterij zodat de klok blijft verdertikken als 
 de stroom wegvalt en ook het geheugen bewaard blijft. 
 
@@ -245,20 +215,60 @@ de range van 08h-3Fh data kan wegschrijven en lezen, dat is het RAM-geheugen.
 |:--:|
 | *DS1307 register layout* |
 
+Het slave-adres van de DS1307 is 0x68, dat staat nergens in het datasheet. Om een of andere reden reageeert de 
+DS1307 soms ook op adres 0x50 of 0x57, maar effectief registers lezen lukt alleen vanaf 0x68.
+
+```console
+me@my-rpi:~ $ i2cdump -y 1 0x68
+No size specified (using byte-data access)
+     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f    0123456789abcdef
+00: 80 00 00 01 01 01 00 b3 ed bf 7b ff ff fb ff bf    ?..???.???{..?.?
+10: 9f fd fb fb ff df f7 ff d7 ed df ed 7f df f7 fd    ????.??.????????
+20: 42 26 28 10 02 82 84 20 32 60 89 a8 51 a0 c0 14    B&(???? 2`??Q???
+30: 10 20 48 00 04 40 c8 90 01 c8 86 00 a8 36 16 a1    ? H.?@?????.?6??
+40: 80 00 00 01 01 01 00 b3 ed bf 7b ff ff fb ff bf    ?..???.???{..?.?
+50: 9f fd fb fb ff 00 f7 ff d7 ed df ed 7f df f7 fd    ????..?.????????
+60: 42 26 28 10 02 82 84 20 32 60 89 a8 51 a0 c0 14    B&(???? 2`??Q???
+70: 10 20 48 00 04 40 c8 90 01 c8 86 00 a8 36 16 a1    ? H.?@?????.?6??
+80: 80 00 00 01 01 01 00 b3 ed bf 7b ff ff fb ff bf    ?..???.???{..?.?
+90: 9f fd fb fb ff df f7 ff d7 ed df ed 7f df f7 fd    ????.??.????????
+a0: 42 26 28 10 02 82 84 20 32 60 89 a8 51 a0 c0 14    B&(???? 2`??Q???
+b0: 10 20 48 00 04 40 c8 90 01 c8 86 00 a8 36 16 a1    ? H.?@?????.?6??
+c0: 80 00 00 01 01 01 00 b3 ed bf 7b ff ff fb ff bf    ?..???.???{..?.?
+d0: 9f fd fb fb ff 00 f7 ff d7 ed df ed 7f df f7 fd    ????..?.????????
+e0: 42 26 28 10 02 82 84 20 32 60 89 a8 51 a0 c0 14    B&(???? 2`??Q???
+f0: 10 20 48 00 04 40 c8 90 01 c8 86 00 a8 36 16 a1    ? H.?@?????.?6??
+```
+Als je goed kijkt zie je dat de inhoud om de 4 regels herhaalt, na het laatste adres (0x3f) antwoordt de DS1307 
+weer met het eerste, dat is een eigenaardigheid van de chip.
+
 De eerste keer dat je de klok gebruikt zal je wel de tijd en datum moeten instellen. Elke 4 bits stellen een
 decimaal getal voor (BCD of Binary Coded Decimal). We zullen dus een conversiemethode moeten schrijven.
 
 **Let op: de MSB van register 0x0 staat voor "Clock Halt" en staat standaard op 1. Om de klok te laten tikken
 zullen we daar dus een 0 moeten schrijven.**
 
+```console
+me@my-rpi:~ $ i2cget -y 1 0x68 0x00                    # secondenregister
+0x80
+me@my-rpi:~ $ i2cset -y 1 0x68 0x00 0x00               # clock halt uit
+me@my-rpi:~ $ i2cget -y 1 0x68 0x00                   
+0x00
+me@my-rpi:~ $ i2cget -y 1 0x68 0x00                   
+0x01
+me@my-rpi:~ $ i2cget -y 1 0x68 0x00                    # de klok tikt!
+0x02
+```
+
 # Datum &amp; tijd in Python
-in de `datetime`-module van Python 
-[klasses die dat allemaal voor ons doen](https://docs.python.org/3/library/datetime.html#available-types). Voor tijd 
+Werken met datum en tijd kan je best altijd aan een library overlaten, er zijn zo veel uitzonderingen op uitzonderingen
+ dat het totaal onhaalbaar is om dit zelf te implementeren. Python heeft daarvoor de `datetime`-module  
+([reference](https://docs.python.org/3/library/datetime.html#available-types)). Voor tijd 
 gebruik je een `time`-object, voor de datum `date` en `datetime` is de combinatie van de twee. De huidige tijd
 vind je met `datetime.now()`.
 
 ```pycon
-from datetime import date, time, datetime, timedelta
+>>> from datetime import date, time, datetime, timedelta
 
 >>> dt = datetime.now()
 >>> dt
@@ -275,6 +285,9 @@ datetime.time(11, 9, 6, 321492)
 >>> t2.hour
 11
 ```
+Let op: in `date` geeft de property `day` de dag van de *maand* weer. De DS3231 refereert naar die waarde als
+*date* (1-31), terwijl *day* daar de dag van de *week* (1-7) voorstelt. Om die te bekomen kan je dan weer 
+de methode `isoweekday()` van `date` gebruiken!
 
 ---
 
@@ -297,11 +310,18 @@ datetime.time(11, 9, 6, 321492)
     - stel om te testen het register in op 55 seconden en check of de overgang van 59 naar 0 correct verloopt. 
 5. Klasse DS1307
     - alle nodige registeradressen, constantes, ... zijn voorzien bovenaan het bestand
-    - de property `clock_enabled` stelt de Clock Halt bit in het `CONTROL`-register in (let op: enabled is het inverse
-    van halt!)
+    - de property `clock_enabled` stelt de Clock Halt bit in het eerste register in (let op: enabled is het inverse
+    van halt)
+    - `get_time()` geeft de tijd van de RTC terug als een `time`-object
     - `set_time(value)` stelt de 3 tijdsregisters van de RTC in a.d.h.v. een Python `time`-object
-    - `get_time(value)` geeft de tijd van de RTC terug als een `time`-object. 
-6. CHALLENGE: probeer de string "NMCT" in het RAM-geheugen van de RTC te zetten en weer op te halen
+    - analoog voor `get_date` en `set_date(value)`, maar:
+        - bij het uitlezen kan je het register `day` negeren (Python kan dat even goed bepalen), maar je moet het wel juist 
+        instellen in `set_date`. Gebruik daarvoor `date.isoweekday()`.
+        - vergeet niet dat er in de RTC maar 2 cijfers zijn voor het jaar, daar moet je zowel bij het instellen als 
+        het uitlezen rekening mee houden
+6. CHALLENGE: probeer de string "NMCT" in het RAM-geheugen van de RTC te zetten en weer op te halen. 
+    - met de functies `ord(c)` en `chr(i)` kan je letters omzetten naar ASCII codes en omgekeerd.
+
 
 # Schakelschema
 ![Schakeling week 7](circuits/week07v2_schema.svg)

@@ -35,8 +35,7 @@ invloed heeft op de nauwkeurigheid van het kwartskristal waarmee de klok de tijd
 
 ## Werking
 De DS3231 houdt de tijd in BCD-formaat bij in 7 registers (0x0 - 0x6) waarvan je hieronder de layout ziet. Je kan de
-registers desgewenst allemaal in een keer lezen/schrijven. Bij de alarmen zijn er bovendien instellingen die je kan doen 
-via een 4-bits waarde die verspreid zit over de MSBs van de alarmregisters.
+registers desgewenst allemaal in een keer lezen/schrijven. 
 
 | ![DS3231 registers](images/op1-1_ds3231-registers.gif) |
 |:--:|
@@ -48,6 +47,22 @@ geen gevolg heeft zolang die bits in het register 0 zijn. Dat is echter niet alt
 naast de uren ook een bit waarmee je kan schakelen tussen 24- en 12-uur (AM/PM)-formaat. Zolang je die 0 houdt is er 
 geen probleem. In register 5 geeft de MSB aan wanneer er een eeuw gepasseerd is (er worden maar 2 cijfers voor het jaar
 bijgehouden, dus op bv. 01/01/2000 wordt die bit op 1 gezet in de plaats).
+
+## Alarmfunctie 
+De DS3231 beschikt over 2 alarmen met elk hun eigen set registers. Als de inhoud van de alarmregisters overeenkomt met 
+de registers van de klok gaat het alarm af en wordt de overeenkomstige bit in het `STATUS`-register hoog gezet. 
+Die bit blijft hoog tot je hem manueel reset, zo lang kan het alarm natuurlijk niet opnieuw afgaan. Je hem dus best
+resetten bij het instellen van het alarm, dan ben je zeker dat het alarm ook zal afgaan.
+
+Bij alarm 2 kan je geen seconden instellen, je moet dus alarm 1 gebruiken voor de opdracht. De eerste bit van elk 
+alarmregister is een "mask bit", door die hoog te zetten wordt het register genegeerd bij het bepalen van het alarm. 
+
+| ![DS3231 alarm mask bits](images/op1-1_ds3231-alarm-mask-bits.gif) |
+|:--:|
+| *DS3231 alarm mask bits* |
+
+Voor de opdracht moet je gewoon alle registers juist zetten en de mask bits 0 laten, je hoeft er dus 
+verder geen rekening mee te houden. 
 
 ## Interrupts
 Als het alarm afgaat wordt in de eerste plaats de `A1F`/`A2F`-bit in het `STATUS`-register (0xF) hoog gezet. 
@@ -103,7 +118,7 @@ je dan op de beide uitgangen een blokgolf krijgt die onderling 1/4 periode van e
 |:--:|
 | *Rotary Encoder: uitgangssignaal* |
 
-## Praktisch
+## PCB Module
 De rotary encoder in jullie kit zit op een PCBtje gemonteerd dat een beetje eigenaardig in elkaar zit: 
  - De ingang `C` is er niet meer, in de plaats zijn er aansluitingen voor V+ en GND 
  - De uitgangen `A` en `B` heten nu `CLK` en `DT`. Hiervoor is er al een pull-up op het bordje, op de RPi moet (mag) je 
@@ -232,7 +247,7 @@ Minimaal voorbeeld van zo een bestand (pas uiteraard aan waar nodig):
 ```ini
 [Unit]
 Description=My first service
-After=multi-user.target
+After=network.target
 
 [Service]
 User=me
@@ -284,7 +299,6 @@ me@my-rpi:~ $ systemctl status myclock.service
     - (correct) gebruik van threading
     - gebruik van interrupts voor het alarm 
     - implementatie van de klok met een [finite state machine](https://www.sparkfun.com/news/1801)
-
 
 # Schakelschema
 ![Schakeling opdracht 1](circuits/opdracht01_schema.svg)
