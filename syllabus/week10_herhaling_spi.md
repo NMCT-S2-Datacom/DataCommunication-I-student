@@ -1,4 +1,4 @@
-# Week 9: SPI LED Matrix &amp; analog joystick
+# Week 10: SPI LED Matrix &amp; analog joystick
 ## Inleiding
 We herhalen deze week het SPI protocol a.d.h.v. de MAX7219 LED driver en de MCP3008 van week 5.
 ### Doelstellingen 
